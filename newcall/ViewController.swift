@@ -22,20 +22,40 @@ class ViewController: UIViewController {
         var Expires: String
     }
     
-    struct listingsData: Decodable {
+  
+    struct listingData: Decodable {
         var D: listingResultsData
     }
     struct listingResultsData: Decodable {
-        var Results: [listingResultsArr]
+        var Results: [listingResults]
     }
-    struct listingResultsArr: Decodable {
-//        var Id: String
-//        var ResourceUri: String
-        var StandardFields: [standardFields]
+    struct listingResults: Decodable {
+        var Id: String
+        var ResourceUri: String
+        var StandardFields: standardFields
     }
     struct standardFields: Decodable {
         var ListAgentName: String
+        var ListAgentStateLicense: String
+        var ListAgentEmail: String
+        
+        var CoListAgentName: String
+        var CoListAgentStateLicense: String
+        
+        var UnparsedFirstLineAddress: String
+        var City: String
+        
+        var CurrentPricePublic: Int
+        
+        var BedsTotal: Int
+        var BathsFull: Int
+        var BathsHalf: Int?
+        
+        var BuildingAreaTotal: Int
+        
+        var PublicRemarks: String?
     }
+    
     
     
     let myListingsPass = "uTqE_dbyYSx6R1LvonsWOApiKeyvc_c15909466_key_1ServicePath/v1/my/listingsAuthToken"
@@ -105,10 +125,13 @@ class ViewController: UIViewController {
                                     }
                                     do {
                                         let newDecoder = JSONDecoder()
-//                                        let theCall = try newDecoder.decode(listingResultsArr.self, from: data)
-                                        guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? JSON else { return }
-                                        print(json)
-//                                        print("This is + \(theCall.StandardFields.count)")
+                                        let theCall = try newDecoder.decode(listingData.self, from: data)
+//
+                                        
+//                                        guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? JSON else { return }
+//                                        print(json)
+//
+                                        print("This is + \(theCall.D.Results)\n")
                         
                         
 //                                            print(theCall)
