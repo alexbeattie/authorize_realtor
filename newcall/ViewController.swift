@@ -8,6 +8,7 @@
 
 import UIKit
 typealias JSON = [String: Any]
+
 class ViewController: UIViewController {
 
     
@@ -23,43 +24,66 @@ class ViewController: UIViewController {
     }
     
   
-    struct listingData: Decodable {
+    struct listingData: Codable {
         var D: listingResultsData
     }
-    struct listingResultsData: Decodable {
+    struct listingResultsData: Codable {
         var Results: [listingResults]
     }
-    struct listingResults: Decodable {
+    struct listingResults: Codable {
         var Id: String
         var ResourceUri: String
         var StandardFields: standardFields
     }
-    struct standardFields: Decodable {
+    struct standardFields: Codable {
+        
+        var ListingId: String
+
         var ListAgentName: String
         var ListAgentStateLicense: String
         var ListAgentEmail: String
-        
+
         var CoListAgentName: String
         var CoListAgentStateLicense: String
-        
+        var ListOfficePhone: String
+        var ListOfficeFax: String
+
         var UnparsedFirstLineAddress: String
         var City: String
-        
+        var PostalCode: String
+        var StateOrProvince: String
+
+        var UnparsedAddress: String
+        var YearBuilt: Int?
+
         var CurrentPricePublic: Int
-        
+        var ListPrice: Int
+
         var BedsTotal: Int
         var BathsFull: Int
         var BathsHalf: Int?
-        
+
         var BuildingAreaTotal: Int
-        
+
         var PublicRemarks: String?
+
+        var ListAgentURL: String
+        var ListOfficeName: String
+        
+        let Latitude: Double
+        let Longitude: Double
+     
     }
+    
+
     
     
     
     let myListingsPass = "uTqE_dbyYSx6R1LvonsWOApiKeyvc_c15909466_key_1ServicePath/v1/my/listingsAuthToken"
+    
+//    let myListingsPhotos = "uTqE_dbyYSx6R1LvonsWOApiKeyvc_c15909466_key_1ServicePath/v1/listings/<Listing.Id>/photosAuthToken"
 //    let call:String = "http://sparkapi.com/v1/my/listings?AuthToken=\(authToken)&ApiSig=\(apiSig)"
+    //    let call:String = "http://sparkapi.com/v1/listings/\(listingId)/photos?AuthToken=\(authToken)&ApiSig=\(apiSig)"
 
     
     func md5(_ string: String) -> String {
@@ -113,7 +137,7 @@ class ViewController: UIViewController {
                     var call = "http://sparkapi.com/v1/my/listings?AuthToken=\(authToken)&ApiSig=\(apiSig)"
                     print(call)
                     var newCallUrl = URL(string: call)
-                    let request = NSMutableURLRequest(url: newCallUrl!)
+                    var request = URLRequest(url: newCallUrl!)
                     request.httpMethod = "GET"
                     request.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringCacheData
                     request.addValue("SparkiOS", forHTTPHeaderField: "X-SparkApi-User-Agent")
@@ -124,13 +148,25 @@ class ViewController: UIViewController {
                                         print(error)
                                     }
                                     do {
-                                        let newDecoder = JSONDecoder()
-                                        let theCall = try newDecoder.decode(listingData.self, from: data)
-//
                                         
-//                                        guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? JSON else { return }
-//                                        print(json)
-//
+                                        let newDecoder = JSONDecoder()
+                                        
+                                        var theCall = try newDecoder.decode(listingData.self, from: data)
+//                                        let id = try newDecoder.decode([listingResults].self, from: data)
+                                        for theId in theCall.D.Results {
+                                            
+                                            theCall.D.Results.append(theId)
+//                                            theCall.D.Results.append(Id)
+                                            let newId = theId.Id
+
+                                            print(newId)
+                                    let photoCall:String = "http://sparkapi.com/v1/listings/\(newId)/photos?AuthToken=\(authToken)&ApiSig=\(apiSig)"
+                                            print(photoCall)
+                                            ///MAKE REQUEST HERE
+                                            
+                                        }
+
+
                                         print("This is + \(theCall.D.Results)\n")
                         
                         
