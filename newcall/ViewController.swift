@@ -128,6 +128,7 @@ class ViewController: UIViewController {
                     return
                 }
                 var myListingsPass = "uTqE_dbyYSx6R1LvonsWOApiKeyvc_c15909466_key_1ServicePath/v1/my/listingsAuthToken"
+                
                 myListingsPass.append(authToken)
                 print("The AuthToken is: " + myListingsPass)
                 let apiSig = self.md5(myListingsPass)
@@ -160,14 +161,21 @@ class ViewController: UIViewController {
                                             let newId = theId.Id
 
                                             print(newId)
-                                    let photoCall:String = "http://sparkapi.com/v1/listings/\(newId)/photos?AuthToken=\(authToken)&ApiSig=\(apiSig)"
+                                            var myPhotoPass:String = "uTqE_dbyYSx6R1LvonsWOApiKeyvc_c15909466_key_1ServicePath/v1/listings/\(newId)/photosAuthToken"
+                                            myPhotoPass.append(authToken)
+                                                            let newApiSig = self.md5(myPhotoPass)
+                                            print(myPhotoPass)
+
+                                            print(newApiSig)
+                                    let photoCall:String = "http://sparkapi.com/v1/listings/\(newId)/photos?AuthToken=\(authToken)&ApiSig=\(newApiSig)"
                                             print(photoCall)
                                             ///MAKE REQUEST HERE
-                                            
+                                            //print("This is + \(theCall.D.Results)\n")
+
                                         }
 
 
-                                        print("This is + \(theCall.D.Results)\n")
+//                                        print("This is + \(theCall.D.Results)\n")
                         
                         
 //                                            print(theCall)
