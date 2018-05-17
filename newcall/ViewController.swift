@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         var Expires: String
     }
     
-  
+    //listing struct
     struct listingData: Codable {
         var D: listingResultsData
     }
@@ -75,7 +75,19 @@ class ViewController: UIViewController {
      
     }
     
-
+    //photo struct
+    struct photoData: Codable {
+        var D: photoResultsData
+    }
+    struct photoResultsData: Codable {
+        var Results: [photoResults]
+    }
+    struct photoResults: Codable {
+//        var Id: String
+//        var ResourceUri: String
+//        var Name: String
+        var UriThumb: String
+    }
     
     
     
@@ -130,13 +142,13 @@ class ViewController: UIViewController {
                 var myListingsPass = "uTqE_dbyYSx6R1LvonsWOApiKeyvc_c15909466_key_1ServicePath/v1/my/listingsAuthToken"
                 
                 myListingsPass.append(authToken)
-                print("The AuthToken is: " + myListingsPass)
+                print("The Pre MD5 /my/listings ApiSig is: " + myListingsPass)
                 let apiSig = self.md5(myListingsPass)
-                print(apiSig)
+                print("The Converted MD5 /my/listings: " + apiSig)
 //                DispatchQueue.main.async(execute: { () -> Void in
 //                    completionHandler(listing)
                     var call = "http://sparkapi.com/v1/my/listings?AuthToken=\(authToken)&ApiSig=\(apiSig)"
-                    print(call)
+                    print("The Session Call is: " + call)
                     var newCallUrl = URL(string: call)
                     var request = URLRequest(url: newCallUrl!)
                     request.httpMethod = "GET"
@@ -146,7 +158,7 @@ class ViewController: UIViewController {
                         guard let data = data else { return }
                             print(data)
                                     if let error = error {
-                                        print(error)
+//                                        print(error)
                                     }
                                     do {
                                         
@@ -154,23 +166,51 @@ class ViewController: UIViewController {
                                         
                                         var theCall = try newDecoder.decode(listingData.self, from: data)
 //                                        let id = try newDecoder.decode([listingResults].self, from: data)
+                                        
+//                                        print(theCall.D.Results)
+
+                                        
                                         for theId in theCall.D.Results {
-                                            
                                             theCall.D.Results.append(theId)
+                                            print(theCall.D.Results)
+
 //                                            theCall.D.Results.append(Id)
                                             let newId = theId.Id
 
-                                            print(newId)
+                                            print("The Listing.Id is: " + newId)
                                             var myPhotoPass:String = "uTqE_dbyYSx6R1LvonsWOApiKeyvc_c15909466_key_1ServicePath/v1/listings/\(newId)/photosAuthToken"
                                             myPhotoPass.append(authToken)
-                                                            let newApiSig = self.md5(myPhotoPass)
-                                            print(myPhotoPass)
+                                            print("The Photo Listing string before conversion Pre MD5 is: " + myPhotoPass)
+                                            let newApiSig = self.md5(myPhotoPass)
+                                            
 
                                             print(newApiSig)
-                                    let photoCall:String = "http://sparkapi.com/v1/listings/\(newId)/photos?AuthToken=\(authToken)&ApiSig=\(newApiSig)"
-                                            print(photoCall)
+                                            let photoCall:String = "http://sparkapi.com/v1/listings/\(newId)/photos?AuthToken=\(authToken)&ApiSig=\(newApiSig)"
+                                            print("The PhotoUrl is: " + photoCall)
                                             ///MAKE REQUEST HERE
                                             //print("This is + \(theCall.D.Results)\n")
+                                            var photoCallUrl = URL(string: photoCall)
+                                            var request = URLRequest(url: photoCallUrl!)
+                                            request.httpMethod = "GET"
+                                            request.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringCacheData
+                                            request.addValue("SparkiOS", forHTTPHeaderField: "X-SparkApi-User-Agent")
+                                            let photoTask = URLSession.shared.dataTask(with: request as URLRequest) { (data, response, error) in
+                                                guard let data = data else { return }
+                                                print(data)
+                                                if let error = error {
+                                                    //                                        print(error)
+                                                }
+                                                do {
+                                                    
+                                                    let photoDecoder = JSONDecoder()
+                                                    
+                                                    var photoCall = try photoDecoder.decode(photoData.self, from: data)
+                                                    print(photoCall.D.Results)
+                                                } catch let err {
+                                                    print(err)
+                                                }
+                                            }
+                                            photoTask.resume()
 
                                         }
 
