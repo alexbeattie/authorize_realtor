@@ -83,10 +83,11 @@ class ViewController: UIViewController {
         var Results: [photoResults]
     }
     struct photoResults: Codable {
-//        var Id: String
+        var Id: String
 //        var ResourceUri: String
 //        var Name: String
-        var UriThumb: String
+//        var UriThumb: String
+        var Uri1600: String
     }
     
     
@@ -147,9 +148,9 @@ class ViewController: UIViewController {
                 print("The Converted MD5 /my/listings: " + apiSig)
 //                DispatchQueue.main.async(execute: { () -> Void in
 //                    completionHandler(listing)
-                    var call = "http://sparkapi.com/v1/my/listings?AuthToken=\(authToken)&ApiSig=\(apiSig)"
+                    let call = "http://sparkapi.com/v1/my/listings?AuthToken=\(authToken)&ApiSig=\(apiSig)"
                     print("The Session Call is: " + call)
-                    var newCallUrl = URL(string: call)
+                    let newCallUrl = URL(string: call)
                     var request = URLRequest(url: newCallUrl!)
                     request.httpMethod = "GET"
                     request.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringCacheData
@@ -158,7 +159,7 @@ class ViewController: UIViewController {
                         guard let data = data else { return }
                             print(data)
                                     if let error = error {
-//                                        print(error)
+                                        print(error)
                                     }
                                     do {
                                         
@@ -189,7 +190,7 @@ class ViewController: UIViewController {
                                             print("The PhotoUrl is: " + photoCall)
                                             ///MAKE REQUEST HERE
                                             //print("This is + \(theCall.D.Results)\n")
-                                            var photoCallUrl = URL(string: photoCall)
+                                            let photoCallUrl = URL(string: photoCall)
                                             var request = URLRequest(url: photoCallUrl!)
                                             request.httpMethod = "GET"
                                             request.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringCacheData
@@ -198,13 +199,13 @@ class ViewController: UIViewController {
                                                 guard let data = data else { return }
                                                 print(data)
                                                 if let error = error {
-                                                    //                                        print(error)
+                                                    print(error)
                                                 }
                                                 do {
                                                     
                                                     let photoDecoder = JSONDecoder()
                                                     
-                                                    var photoCall = try photoDecoder.decode(photoData.self, from: data)
+                                                    let photoCall = try photoDecoder.decode(photoData.self, from: data)
                                                     print(photoCall.D.Results)
                                                 } catch let err {
                                                     print(err)
@@ -214,11 +215,6 @@ class ViewController: UIViewController {
 
                                         }
 
-
-//                                        print("This is + \(theCall.D.Results)\n")
-                        
-                        
-//                                            print(theCall)
                         
                                     } catch let err {
                                         print(err)
@@ -227,13 +223,6 @@ class ViewController: UIViewController {
                     
                                 newTask.resume()
                 
-                    
-            
-//                DispatchQueue.main.async(execute: { () -> Void in
-//                    completionHandler(listing)
-////                    print(call)
-//
-//                })
             } catch let err {
                 print(err)
             }
